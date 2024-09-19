@@ -1,14 +1,13 @@
-def merge_n_sorted_lists(n: int, input_list: list) -> list[int]:
-    if n > 1:
-        output = merge_two_sorted_lists(input_list[0], input_list[1])
+def merge_sort(sorting_list: list[int]) -> list[int]:
+    if len(sorting_list) > 1:
+        first_half = sorting_list[:len(sorting_list) // 2]
+        second_half = sorting_list[len(sorting_list) // 2:]
 
-        for i in range(2, n):
-            output = merge_two_sorted_lists(output, input_list[i])
+        sorted_list = merge_two_sorted_lists(merge_sort(first_half), merge_sort(second_half))
 
-        return output
-
+        return sorted_list
     else:
-        return input_list[0]
+        return sorting_list
 
 
 def merge_two_sorted_lists(first_list: list, second_list: list) -> list[int]:
@@ -33,17 +32,11 @@ def merge_two_sorted_lists(first_list: list, second_list: list) -> list[int]:
     return output
 
 
-n_test = int(input())
+m = int(input())
+num_list = input().split(" ")
+num_list = [int(x) for x in num_list]
 
-subs = []
+ans = merge_sort(num_list)
 
-for i in range(n_test):
-    m = int(input())
-    nums = input().split(" ")
-    nums = [int(x) for x in nums]
-    subs.append(nums)
-
-ans = merge_n_sorted_lists(n_test, subs)
-
-for i in range(len(ans)):
+for i in range(m):
     print(ans[i], end=" ")
