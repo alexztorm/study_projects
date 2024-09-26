@@ -3,14 +3,18 @@ class Solution:
         ans = []
 
         for i in range(1, n + 1):
-            if i % 3 == 0 and i % 5 == 0:
-                ans.append('FizzBuzz')
-            elif i % 3 == 0:
-                ans.append('Fizz')
-            elif i % 5 == 0:
-                ans.append('Buzz')
-            else:
+            ans_str = ""
+
+            if i % 3 == 0:
+                ans_str += "Fizz"
+
+            if i % 5 == 0:
+                ans_str += "Buzz"
+
+            if not ans_str:
                 ans.append(str(i))
+            else:
+                ans.append(ans_str)
 
         return ans
 
