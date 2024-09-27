@@ -11,7 +11,6 @@ class Solution:
 
         return ans
 
-
     def number_of_steps2(self, num: int) -> int:
         ans = 0
 
