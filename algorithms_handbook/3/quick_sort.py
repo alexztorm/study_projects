@@ -12,13 +12,3 @@ def quick_sort(numbers: list[int]) -> list[int]:
             num_large.append(numbers[i])
 
     return quick_sort(num_small) + [first] + quick_sort(num_large)
-
-
-m = int(input())
-num_list = input().split(" ")
-num_list = [int(x) for x in num_list]
-
-ans = quick_sort(num_list)
-
-for i in range(m):
-    print(ans[i], end=" ")

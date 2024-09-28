@@ -13,19 +13,3 @@ def polynom_sum(p1: list[int], p2: list[int]) -> list[int]:
             j -= 1
 
         return p2
-
-
-m1 = int(input())
-num_list1 = input().split(" ")
-num_list1 = [int(x) for x in num_list1]
-
-m2 = int(input())
-num_list2 = input().split(" ")
-num_list2 = [int(x) for x in num_list2]
-
-ans = polynom_sum(num_list1, num_list2)
-
-print(max(m1, m2))
-
-for i in range(len(ans)):
-    print(ans[i], end=" ")

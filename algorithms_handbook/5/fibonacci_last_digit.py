@@ -12,8 +12,3 @@ def fibonacci_last_digit(n: int) -> int:
             prev = prev % 10
 
         return prev
-
-
-m = int(input())
-
-print(fibonacci_last_digit(m))

@@ -11,8 +11,3 @@ def fibonacci(n: int) -> int:
             prev += tmp
 
         return prev
-
-
-m = int(input())
-
-print(fibonacci(m))

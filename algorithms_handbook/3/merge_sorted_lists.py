@@ -31,19 +31,3 @@ def merge_two_sorted_lists(first_list: list, second_list: list) -> list[int]:
             j += 1
 
     return output
-
-
-n_test = int(input())
-
-subs = []
-
-for i in range(n_test):
-    m = int(input())
-    nums = input().split(" ")
-    nums = [int(x) for x in nums]
-    subs.append(nums)
-
-ans = merge_n_sorted_lists(n_test, subs)
-
-for i in range(len(ans)):
-    print(ans[i], end=" ")
