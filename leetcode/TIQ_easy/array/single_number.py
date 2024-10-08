@@ -15,6 +15,14 @@ def singleNumber(nums: list[int]) -> int:
             return nums[len(nums) - 1]
 
 
-print(singleNumber([2, 2, 1]))
-print(singleNumber([4, 1, 2, 1, 2]))
-print(singleNumber([1]))
+def singleNumber2(nums: list[int]) -> int:
+    result = 0
+    for num in nums:
+        result ^= num
+        print(result)
+    return result
+
+
+print(singleNumber2([2, 2, 1]))
+print(singleNumber2([4, 1, 2, 1, 2]))
+print(singleNumber2([1]))
