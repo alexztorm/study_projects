@@ -1,23 +1,7 @@
 def change_combinations(n: int) -> list[list[int]]:
     comb = [[0]]
 
-    new_comb = [0]
-
-    k = n
-
-    while k > 0:
-        if k >= 10:
-            k = k - 10
-            new_comb.append(10)
-        elif k >= 5:
-            k = k - 5
-            new_comb.append(5)
-        else:
-            k = k - 1
-            new_comb.append(1)
-        new_comb[0] += 1
-
-    comb.append(new_comb+[])
+    comb.append(optimal_change(n))
     comb[0][0] += 1
     
     i = 1
@@ -53,6 +37,22 @@ def change_combinations(n: int) -> list[list[int]]:
                     j += 1
                 # print(j, new_comb)
     return comb
+
+
+def optimal_change(money):
+    coins = [0]
+    while money > 0:
+        if money >= 10:
+            money -= 10
+            coins.append(10)
+        elif money >= 5:
+            money -= 5
+            coins.append(5)
+        else:
+            money -= 1
+            coins.append(1)
+        coins[0] += 1
+    return coins
 
 
 m = int(input())
