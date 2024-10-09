@@ -1,3 +1,6 @@
+from collections import Counter
+
+
 def intersect(nums1: list[int], nums2: list[int]) -> list[int]:
     ans = []
 
@@ -13,6 +16,19 @@ def intersect(nums1: list[int], nums2: list[int]) -> list[int]:
     return ans
 
 
-print(intersect([1, 2, 3, 4, 5, 6, 7], [1, 3, 5, 7]))
-print(intersect([1, 2, 2, 1], [2, 2]))
-print(intersect([4, 9, 5], [9, 4, 9, 8, 4]))
+def intersect2(nums1: list[int], nums2: list[int]) -> list[int]:
+    ans = []
+
+    hash_map = Counter(nums1)
+
+    for num in nums2:
+        if num in hash_map and hash_map[num] > 0:
+            ans.append(num)
+            hash_map[num] -= 1
+
+    return ans
+
+
+print(intersect2([1, 2, 3, 4, 5, 6, 7], [1, 3, 5, 7]))
+print(intersect2([1, 2, 2, 1], [2, 2]))
+print(intersect2([4, 9, 5], [9, 4, 9, 8, 4]))
