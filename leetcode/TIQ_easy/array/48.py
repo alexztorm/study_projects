@@ -17,10 +17,8 @@ def one_rotation(matrix: list[list[int]], start: tuple[int, int]) -> list[list[i
     tmp = matrix[i][j]
 
     for _ in range(3):
-        # print(i, j)
-        matrix[i][j] = matrix[j][n - 1 - i]
-        i, j = j, n - 1 - i
-    # print(i, j)
+        matrix[i][j] = matrix[n - 1 - j][i]
+        i, j = n - 1 - j, i
 
     matrix[i][j] = tmp
 
