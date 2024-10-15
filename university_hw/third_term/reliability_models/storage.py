@@ -1,4 +1,4 @@
-class Storage:
+class DBStorage:
     def __init__(self):
         ...
 
@@ -8,7 +8,7 @@ class Storage:
     def load(self):
         ...
 
-    def delete(self, element):
+    def delete(self, item):
         ...
 
     def clear_storage(self):
