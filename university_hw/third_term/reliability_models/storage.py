@@ -13,3 +13,14 @@ class DBStorage:
 
     def clear_storage(self):
         ...
+
+
+class FileStorage:
+    def __init__(self):
+        ...
+
+    def store(self):
+        ...
+
+    def load(self):
+        ...

@@ -7,8 +7,9 @@ class SchemeUnit:
 
         self.image = None
         self.number_of_blocks = 0
-        self.distribution = "exponential"
-        self.probability = None
+        self.distribution = []
+        self.times = []
+        self.probability = 1
 
         self.change_unit_type(type_of_scheme)
     
@@ -40,3 +41,15 @@ class SchemeUnit:
         elif new_type == 8:
             self.image = ImageTk.PhotoImage(Image.open("schemes/scheme_8.png"))
             self.number_of_blocks = 6
+
+        self.distribution = ['Экспоненциальное'] * self.number_of_blocks
+        self.times = [0] * self.number_of_blocks
+
+    def edit_block_distribution(self, block_num, new_distribution):
+        self.distribution[block_num] = new_distribution
+
+    def edit_block_time(self, block_num, new_time):
+        self.times[block_num] = new_time
+
+    def calc_probability(self, unit_type):
+        ...
