@@ -15,6 +15,20 @@ def firstUniqChar(s: str) -> int:
     return -1
 
 
-print(firstUniqChar("leetcode"))
-print(firstUniqChar("loveleetcode"))
-print(firstUniqChar("aabb"))
+def firstUniqChar2(s: str) -> int:
+    # Solution idea by MarkSPhilip31
+    uniques = {}
+
+    for letter in s:
+        uniques[letter] = uniques.get(letter, 0) + 1
+
+    for i in range(len(s)):
+        if uniques[s[i]] == 1:
+            return i
+
+    return -1
+
+
+print(firstUniqChar2("leetcode"))
+print(firstUniqChar2("loveleetcode"))
+print(firstUniqChar2("aabb"))
