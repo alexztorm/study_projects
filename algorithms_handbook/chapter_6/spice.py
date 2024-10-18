@@ -1,5 +1,5 @@
 def max_spice(w: int, weight: list[int], cost: list[int]) -> float:
-    if w == 0 or not weight:
+    if w <= 0 or not weight:
         return 0
 
     max_cost, max_cost_id = 0, 0
