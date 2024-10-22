@@ -1,21 +1,22 @@
-1           Two Sum                                         Easy
-7           Reverse Integer                                 Medium
-8           String to Integer (atoi)                        Medium
-26          Remove Duplicates From Sorted Array             Easy
-36          Valid Sudoku                                    Medium
-48          Rotate Image                                    Medium
-66          Plus One                                        Easy
-122         Best Time to Buy and Sell Stock II              Medium
-125         Valid Palindrome                                Easy
-136         Single Number                                   Easy
-189         Rotate Array                                    Medium
-217         Contains Duplicate                              Easy
-242         Valid Anagram                                   Easy
-283         Move Zeroes                                     Easy
-344         Reverse String                                  Easy
-350         Intersection of Two Arrays II                   Easy
-383         Ransom Note                                     Easy
-387         First Unique Character in a String              Easy
-412         Fizz Buzz                                       Easy
-1342        Number of Steps to Reduce a Number to Zero      Easy
-1672        Richest Customer Wealth                         Easy
+1           Two Sum                                                 Easy
+7           Reverse Integer                                         Medium
+8           String to Integer (atoi)                                Medium
+26          Remove Duplicates From Sorted Array                     Easy
+28          Find the Index of the First Occurrence in a String      Easy
+36          Valid Sudoku                                            Medium
+48          Rotate Image                                            Medium
+66          Plus One                                                Easy
+122         Best Time to Buy and Sell Stock II                      Medium
+125         Valid Palindrome                                        Easy
+136         Single Number                                           Easy
+189         Rotate Array                                            Medium
+217         Contains Duplicate                                      Easy
+242         Valid Anagram                                           Easy
+283         Move Zeroes                                             Easy
+344         Reverse String                                          Easy
+350         Intersection of Two Arrays II                           Easy
+383         Ransom Note                                             Easy
+387         First Unique Character in a String                      Easy
+412         Fizz Buzz                                               Easy
+1342        Number of Steps to Reduce a Number to Zero              Easy
+1672        Richest Customer Wealth                                 Easy
