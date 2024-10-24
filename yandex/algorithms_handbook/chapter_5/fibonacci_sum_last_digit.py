@@ -1,4 +1,4 @@
-from algorithms_handbook.chapter_5.fibonacci_mod import pisano_period
+from yandex.algorithms_handbook.chapter_5.fibonacci_mod import pisano_period
 
 
 def fibonacci_sum_last_digit(n: int) -> int:

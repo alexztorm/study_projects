@@ -1,4 +1,4 @@
-from algorithms_handbook.chapter_5.fibonacci_sum_last_digit import fibonacci_sum_last_digit
+from yandex.algorithms_handbook.chapter_5.fibonacci_sum_last_digit import fibonacci_sum_last_digit
 
 
 def fibonacci_partial_sum_last_digit(m: int, n: int) -> int:

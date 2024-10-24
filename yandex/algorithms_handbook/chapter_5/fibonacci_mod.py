@@ -1,4 +1,4 @@
-from algorithms_handbook.chapter_5.fibonacci import fibonacci
+from yandex.algorithms_handbook.chapter_5.fibonacci import fibonacci
 
 
 def fibonacci_mod(n: int, m: int) -> int:
