@@ -1,8 +1,9 @@
 from PIL import ImageTk, Image
+from distribution import Distribution
 
 
 class SchemeUnit:
-    def __init__(self, type_of_scheme, start_time=0):
+    def __init__(self, type_of_scheme: int, start_time: int = 0):
         self.start_time = start_time
 
         self.image = None
@@ -42,11 +43,13 @@ class SchemeUnit:
             self.image = ImageTk.PhotoImage(Image.open("schemes/scheme_8.png"))
             self.number_of_blocks = 6
 
-        self.distribution = ['Экспоненциальное'] * self.number_of_blocks
         self.times = [0] * self.number_of_blocks
 
+        for i in range(self.number_of_blocks):
+            self.distribution.append(Distribution('Экспоненциальное'))
+
     def edit_block_distribution(self, block_num, new_distribution):
-        self.distribution[block_num] = new_distribution
+        self.distribution[block_num].change_distribution_type(new_distribution)
 
     def edit_block_time(self, block_num, new_time):
         self.times[block_num] = new_time

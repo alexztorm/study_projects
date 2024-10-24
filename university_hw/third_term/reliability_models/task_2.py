@@ -164,30 +164,72 @@ class EditUnitWindow(tk.Toplevel):
         self.unit = unit
 
         self.image_label = tk.Label(self, image=self.unit.image)
-        self.image_label.grid(row=0, column=0, padx=5, pady=5, columnspan=2)
-        self.distribution_label = tk.Label(self, text='Выбрать распределения: ')
+        self.image_label.grid(row=0, column=0, padx=5, pady=5, columnspan=6)
+        self.distribution_label = tk.Label(self, text='Укажите распределение: ')
         self.distribution_label.grid(row=1, column=0, padx=5, pady=5, columnspan=2)
+        self.params_label = tk.Label(self, text='Укажите параметры: ')
+        self.params_label.grid(row=1, column=2, padx=5, pady=5, columnspan=4)
 
         self.combobox_list = []
         self.combobox_values = ['Экспоненциальное', 'Нормальное', 'Вейбулла-Гнеденко', 'Рэлея']
         self.combobox_vars = []
+        self.params_boxes = {}
 
         for i in range(self.unit.number_of_blocks):
             block_label = tk.Label(self, text=f'Элемент {i + 1}:')
             block_label.grid(row=i + 2, column=0, padx=5, pady=5)
-            new_var = tk.StringVar(value=self.unit.distribution[i])
+            new_var = tk.StringVar(value=self.unit.distribution[i].get_type())
             self.combobox_vars.append(new_var)
             new_combobox = ttk.Combobox(self, textvariable=new_var, values=self.combobox_values, state='readonly')
             new_combobox.grid(row=i + 2, column=1, padx=5, pady=5)
+            new_combobox.bind("<<ComboboxSelected>>",
+                              lambda event, block_id=i: self.change_params_boxes(event, block_id))
             self.combobox_list.append(new_combobox)
+
+            # self.setup_params_line(i)
+
+            params_boxes_list = []
+            unit_params = self.unit.distribution[i].get_params()
+            for key in unit_params.keys():
+                new_params_label = tk.Label(self, text=f'{key}: ')
+                new_params_label.grid(row=i + 2, column=2, padx=5, pady=5)
+                params_boxes_list.append(new_params_label)
+                new_params_entry = tk.Entry(self)
+                new_params_entry.insert(0, f'{unit_params[key]}')
+                new_params_entry.grid(row=i + 2, column=3, padx=5, pady=5)
+                params_boxes_list.append(new_params_entry)
+            self.params_boxes[i] = params_boxes_list
 
         self.accept_button = tk.Button(self, text='Подтвердить', command=self.accept_changes)
         self.accept_button.grid(row=2 + self.unit.number_of_blocks, column=0, padx=5, pady=5, columnspan=2)
 
     def accept_changes(self):
         for i in range(self.unit.number_of_blocks):
-            self.unit.distribution[i] = self.combobox_list[i].get()
+            self.unit.edit_block_distribution(i, self.combobox_list[i].get())
         self.destroy()
+
+    def setup_params_line(self, block_id: int):
+        params_boxes_list = []
+        unit_params = self.unit.distribution[block_id].get_params()
+        for key in unit_params.keys():
+            new_params_label = tk.Label(self, text=f'{key}: ')
+            new_params_label.grid(row=block_id + 2, column=2, padx=5, pady=5)
+            params_boxes_list.append(new_params_label)
+            new_params_entry = tk.Entry(self)
+            new_params_entry.insert(0, f'{unit_params[key]}')
+            new_params_entry.grid(row=block_id + 2, column=3, padx=5, pady=5)
+            params_boxes_list.append(new_params_entry)
+        self.params_boxes[block_id] = params_boxes_list
+
+    def change_params_boxes(self, event, block_id: int):
+        if self.combobox_list[block_id].get() == 'Экспоненциальное':
+            ...
+        elif self.combobox_list[block_id].get() == 'Нормальное':
+            ...
+        elif self.combobox_list[block_id].get() == 'Вейбулла-Гнеденко':
+            ...
+        else:
+            ...
 
 
 m = MainWindow()
