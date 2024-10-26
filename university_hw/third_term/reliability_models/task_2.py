@@ -10,6 +10,10 @@ from storage import DBStorage, FileStorage
 class MainWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.db_storage = DBStorage()
+        self.file_storage = FileStorage()
+
         self.label_list = []
         self.button_list = []
         self.unit_list = []
@@ -33,11 +37,17 @@ class MainWindow(tk.Tk):
         new_button = tk.Button(self, anchor="nw", text="Запустить расчет", command=self.start_calc)
         new_button.grid(row=5, column=0, columnspan=2)
         self.button_list.append(new_button)
-        new_button = tk.Button(self, anchor="nw", text="Сохранить")
+        new_button = tk.Button(self, anchor="nw", text="Сохранить в БД", command=self.save_to_db)
         new_button.grid(row=5, column=2)
         self.button_list.append(new_button)
-        new_button = tk.Button(self, anchor="nw", text="Загрузить")
+        new_button = tk.Button(self, anchor="nw", text="Загрузить из БД", command=self.load_from_db)
         new_button.grid(row=5, column=3)
+        self.button_list.append(new_button)
+        new_button = tk.Button(self, anchor="nw", text="Сохранить в Файл", command=self.save_to_file)
+        new_button.grid(row=5, column=4)
+        self.button_list.append(new_button)
+        new_button = tk.Button(self, anchor="nw", text="Загрузить из Файла", command=self.load_from_file)
+        new_button.grid(row=5, column=5)
         self.button_list.append(new_button)
         new_button = tk.Button(self, text="Добавить", anchor="nw", command=self.add_scheme_unit)
         new_button.grid(row=4, column=0, columnspan=2)
@@ -103,6 +113,18 @@ class MainWindow(tk.Tk):
         if 0 >= probability_entry_value or probability_entry_value >= 1:
             return False
         return True
+
+    def save_to_db(self):
+        ...
+
+    def load_from_db(self):
+        ...
+
+    def save_to_file(self):
+        self.file_storage.store(self.unit_list)
+
+    def load_from_file(self):
+        ...
 
 
 class ChooseSchemeUnitWindow(tk.Toplevel):
@@ -183,53 +205,58 @@ class EditUnitWindow(tk.Toplevel):
             new_combobox = ttk.Combobox(self, textvariable=new_var, values=self.combobox_values, state='readonly')
             new_combobox.grid(row=i + 2, column=1, padx=5, pady=5)
             new_combobox.bind("<<ComboboxSelected>>",
-                              lambda event, block_id=i: self.change_params_boxes(event, block_id))
+                              lambda event, block_id=i: self.change_params_line(event, block_id))
             self.combobox_list.append(new_combobox)
 
-            # self.setup_params_line(i)
-
-            params_boxes_list = []
-            unit_params = self.unit.distribution[i].get_params()
-            for key in unit_params.keys():
-                new_params_label = tk.Label(self, text=f'{key}: ')
-                new_params_label.grid(row=i + 2, column=2, padx=5, pady=5)
-                params_boxes_list.append(new_params_label)
-                new_params_entry = tk.Entry(self)
-                new_params_entry.insert(0, f'{unit_params[key]}')
-                new_params_entry.grid(row=i + 2, column=3, padx=5, pady=5)
-                params_boxes_list.append(new_params_entry)
-            self.params_boxes[i] = params_boxes_list
+            self.setup_params_line(i)
 
         self.accept_button = tk.Button(self, text='Подтвердить', command=self.accept_changes)
         self.accept_button.grid(row=2 + self.unit.number_of_blocks, column=0, padx=5, pady=5, columnspan=2)
 
     def accept_changes(self):
         for i in range(self.unit.number_of_blocks):
-            self.unit.edit_block_distribution(i, self.combobox_list[i].get())
+            new_params = []
+            for j in range(1, len(self.params_boxes[i]), 2):
+                new_params.append(float(self.params_boxes[i][j].get()))
+            self.unit.distribution[i].change_params(new_params)
         self.destroy()
 
     def setup_params_line(self, block_id: int):
-        params_boxes_list = []
         unit_params = self.unit.distribution[block_id].get_params()
+        params_boxes_list = []
+        counter = 0
         for key in unit_params.keys():
             new_params_label = tk.Label(self, text=f'{key}: ')
-            new_params_label.grid(row=block_id + 2, column=2, padx=5, pady=5)
+            new_params_label.grid(row=block_id + 2, column=2 + counter, padx=5, pady=5)
             params_boxes_list.append(new_params_label)
             new_params_entry = tk.Entry(self)
             new_params_entry.insert(0, f'{unit_params[key]}')
-            new_params_entry.grid(row=block_id + 2, column=3, padx=5, pady=5)
+            new_params_entry.grid(row=block_id + 2, column=3 + counter, padx=5, pady=5)
             params_boxes_list.append(new_params_entry)
+            counter += 2
+
         self.params_boxes[block_id] = params_boxes_list
 
-    def change_params_boxes(self, event, block_id: int):
-        if self.combobox_list[block_id].get() == 'Экспоненциальное':
-            ...
-        elif self.combobox_list[block_id].get() == 'Нормальное':
-            ...
-        elif self.combobox_list[block_id].get() == 'Вейбулла-Гнеденко':
-            ...
-        else:
-            ...
+    def change_params_line(self, event, block_id: int):
+        for element in self.params_boxes[block_id]:
+            element.destroy()
+
+        self.unit.edit_block_distribution(block_id, self.combobox_list[block_id].get())
+        new_params = self.unit.distribution[block_id].get_params()
+        counter = 0
+        params_boxes_list = []
+
+        for key in new_params:
+            new_params_label = tk.Label(self, text=f'{key}: ')
+            new_params_label.grid(row=block_id + 2, column=2 + counter, padx=5, pady=5)
+            params_boxes_list.append(new_params_label)
+            new_params_entry = tk.Entry(self)
+            new_params_entry.insert(0, f'{new_params[key]}')
+            new_params_entry.grid(row=block_id + 2, column=3 + counter, padx=5, pady=5)
+            params_boxes_list.append(new_params_entry)
+            counter += 2
+
+        self.params_boxes[block_id] = params_boxes_list
 
 
 m = MainWindow()

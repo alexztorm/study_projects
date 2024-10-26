@@ -9,6 +9,7 @@ class Distribution:
         if distribution_type in self.valid_distribution_types:
             self.type = distribution_type
             self.params = {}
+            self.set_default_params()
         else:
             ...
 
@@ -22,19 +23,33 @@ class Distribution:
         if new_type in self.valid_distribution_types:
             self.type = new_type
             self.params = {}
+            self.set_default_params()
         else:
             ...
+
+    def set_default_params(self):
+        if self.type == 'Экспоненциальное':
+            self.params['lambda'] = 0.015
+        elif self.type == 'Нормальное':
+            self.params['mu'] = 0.01
+            self.params['sigma'] = 0.015
+        elif self.type == 'Вейбулла-Гнеденко':
+            self.params['lambda'] = 0.015
+            self.params['alpha'] = 0.01
+        else:
+            self.params['sigma'] = 0.015
 
     def change_params(self, params: list[float]):
         if self.type == 'Экспоненциальное':
             self.params['lambda'] = 0
         elif self.type == 'Нормальное':
-            ...
+            self.params['mu'] = 0
+            self.params['sigma'] = 0
         elif self.type == 'Вейбулла-Гнеденко':
             self.params['lambda'] = 0
-            self.params['mu'] = 0
+            self.params['alpha'] = 0
         else:
-            ...
+            self.params['sigma'] = 0.015
 
         i = 0
         for key in self.params.keys():
@@ -43,11 +58,11 @@ class Distribution:
 
     def calc_probability(self, t: int):
         if self.type == 'Экспоненциальное':
-            return exp(- self.params['lambda'] * t)
+            return self.params['lambda'] * exp(-self.params['lambda'] * t)
         elif self.type == 'Нормальное':
             ...
         elif self.type == 'Вейбулла-Гнеденко':
-            return (exp(- self.params['lambda'] / self.params['mu'])
-                    * (1 - exp(- self.params['lambda'] / self.params['mu'])))
+            return (self.params['lambda'] * self.params['alpha'] * t ** (self.params['alpha'] - 1)
+                    * exp(-self.params['lambda'] * t ** (self.params['alpha'])))
         else:
-            ...
+            return exp(-t ** 2 / (2 * self.params['sigma'] ** 2))
