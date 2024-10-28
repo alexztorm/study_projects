@@ -124,7 +124,13 @@ class MainWindow(tk.Tk):
         self.file_storage.store(self.unit_list)
 
     def load_from_file(self):
-        ...
+        for i in range(len(self.unit_list)):
+            self.delete_unit('<Button-3>', 0)
+
+        self.unit_list = self.file_storage.load()
+
+        for unit in self.unit_list:
+            self.draw_unit(unit)
 
 
 class ChooseSchemeUnitWindow(tk.Toplevel):

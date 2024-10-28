@@ -11,6 +11,7 @@ class SchemeUnit:
         self.distribution = []
         self.times = []
         self.probability = 1
+        self.type = 0
 
         self.change_unit_type(type_of_scheme)
     
@@ -44,6 +45,7 @@ class SchemeUnit:
             self.number_of_blocks = 6
 
         self.times = [0] * self.number_of_blocks
+        self.type = new_type
 
         for i in range(self.number_of_blocks):
             self.distribution.append(Distribution('Экспоненциальное'))
