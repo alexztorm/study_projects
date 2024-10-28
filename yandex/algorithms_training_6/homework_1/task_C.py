@@ -4,12 +4,22 @@ def letter_on_the_screen(n: int, screen: list[str]) -> str:
     for i in range(n):
         for j in range(n):
             if screen[i][j] == '#':
-                if i > x1 or j < y1:
-                    x1, y1 = i, j
-                if i < x2 or j > y2:
-                    x2, y2 = i, j
+                if i > x1:
+                    x1 = i
+                if j < y1:
+                    y1 = j
+                if i < x2:
+                    x2 = i
+                if j > y2:
+                    y2 = j
 
-    print(x1, y1, x2, y2)
+    x3, y3, x4, y4 = -1, n, n, -1
+    x5, y5, x6, y6 = -1, n, n, -1
+
+    for i in range(x2, x1 + 1):
+        for j in range(y1, y2 + 1):
+            if screen[i][j] == '.':
+                ...
 
     return "X"
 
@@ -67,9 +77,17 @@ else:
              '##...',
              '##...']],
         [0, []],
-        [1, ['#']]
+        [1, ['#']],
+        [4, ['####',
+             '##.#',
+             '####',
+             '####']],
+        [4, ['##.#',
+             '##.#',
+             '####',
+             '#..#']]
     ]
-    ans = ['I', 'X', 'O', 'C', 'L', 'H', 'P', 'P', 'X', 'I']
+    ans = ['I', 'X', 'O', 'C', 'L', 'H', 'P', 'P', 'X', 'I', 'O', 'X']
 
     for l in range(len(ans)):
         if letter_on_the_screen(tests[l][0], tests[l][1]) == ans[l]:
