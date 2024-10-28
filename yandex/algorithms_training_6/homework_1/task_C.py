@@ -2,6 +2,15 @@ def letter_on_the_screen(n: int, screen: list[str]) -> str:
     if not screen:
         return 'X'
 
+    is_filled = False
+    for i in range(n):
+        if '#' in screen[i]:
+            is_filled = True
+            break
+
+    if not is_filled:
+        return 'X'
+
     x1, x2, y1, y2 = n, -1, -1, n
 
     for i in range(n):
@@ -33,7 +42,6 @@ def letter_on_the_screen(n: int, screen: list[str]) -> str:
 
     for i in range(y2, y1 + 1):
         for j in range(x1, x2 + 1):
-            print(screen[i][j], dark_rectangle, rect_count, rect_cords)
             if screen[i][j] == '#':
                 if dark_rectangle and not lines_with_blanks[i - y2]:
                     dark_rectangle = False
@@ -51,14 +59,30 @@ def letter_on_the_screen(n: int, screen: list[str]) -> str:
                 else:
                     rect_cords[rect_count - 1][2], rect_cords[rect_count - 1][3] = i, j
 
-    print(rect_cords)
+    for _ in range(rect_count):
+        for i in range(rect_cords[0][0], rect_cords[0][2] + 1):
+            for j in range(rect_cords[0][1], rect_cords[0][3] + 1):
+                if screen[i][j] == '#':
+                    return 'X'
+
+    for i in range(y2, y1 + 1):
+        for j in range(x1, x2 + 1):
+            if screen[i][j] == '.':
+                in_rect = False
+
+                for k in range(rect_count):
+                    if rect_cords[k][0] <= i <= rect_cords[k][2] and rect_cords[k][1] <= j <= rect_cords[k][3]:
+                        in_rect = True
+                        break
+
+                if not in_rect:
+                    return 'X'
 
     x3, y3, x4, y4 = rect_cords[0][1], rect_cords[0][2], rect_cords[0][3], rect_cords[0][0]
 
     if rect_count == 1:
 
         if x1 < x3 <= x4 < x2 and y2 < y4 <= y3 < y1:
-            print(x3, y3, x4, y4)
             return 'O'
         elif x1 < x3 <= x4 == x2 and y2 < y4 <= y3 < y1:
             return 'C'
@@ -152,11 +176,20 @@ else:
               '.#########',
               '..........',
               '..........',
-              '..........']]
+              '..........']],
+        [9, ['.........',
+             '.####...#',
+             '.####...#',
+             '.####...#',
+             '.########',
+             '.####...#',
+             '.####...#',
+             '..###...#',
+             '.........']]
     ]
     ans = ['I', 'X', 'O', 'C', 'L', 'H', 'P', 'P', 'X', 'I', 'O', 'X', 'X', 'X']
 
-    for l in range(len(ans)-1, len(ans)):
+    for l in range(len(ans)):
         if letter_on_the_screen(tests[l][0], tests[l][1]) == ans[l]:
             print(True)
         else:
