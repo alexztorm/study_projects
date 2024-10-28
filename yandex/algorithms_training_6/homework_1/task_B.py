@@ -10,10 +10,18 @@ def shirts_n_socks(a: int, b: int, c: int, d: int):
         return a + 1, 1
     elif d == 0:
         return b + 1, 1
-    elif a + c < b + d:
-        return a + 1, c + 1
     else:
-        return b + 1, d + 1
+        sums = [max(a, b), max(c, d), a + c, b + d]
+        min_sum = min(sums)
+
+        if min_sum == max(a, b):
+            return max(a, b) + 1, 1
+        elif min_sum == max(c, d):
+            return 1, max(c, d) + 1
+        elif min_sum == a + c:
+            return a + 1, c + 1
+        else:
+            return b + 1, d + 1
 
 
 input_list = []
