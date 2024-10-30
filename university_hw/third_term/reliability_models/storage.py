@@ -28,7 +28,8 @@ class FileStorage:
                 for i in range(unit.number_of_blocks):
                     save_file.write(f'{unit.times[i]};{unit.distribution[i].get_type()}')
                     for key in unit.distribution[i].params.keys():
-                        save_file.write(f';{key};{unit.distribution[i].params[key]}')
+                        save_file.write(f';{unit.distribution[i].params[key]}')
+                    save_file.write('\n')
 
     def load(self) -> list[SchemeUnit]:
         load_data = []
@@ -40,11 +41,13 @@ class FileStorage:
             for i in range(int(data[0])):
                 new_unit = SchemeUnit(int(data[line_id]))
                 for j in range(new_unit.number_of_blocks):
-                    new_unit.times[j] = data[line_id + j]
+                    block_line = data[line_id + j + 1].split(';')
+                    new_unit.times[j] = int(block_line[0])
+                    new_unit.distribution[j].change_distribution_type(block_line[1])
+                    params = [float(x) for x in block_line[2:]]
+                    new_unit.distribution[j].change_params(params)
+                load_data.append(new_unit)
 
-                line_id += new_unit.number_of_blocks
+                line_id += new_unit.number_of_blocks + 1
 
         return load_data
-
-    def clear_storage(self):
-        ...
