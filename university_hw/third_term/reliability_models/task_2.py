@@ -115,10 +115,16 @@ class MainWindow(tk.Tk):
         return True
 
     def save_to_db(self):
-        ...
+        self.db_storage.store(self.unit_list)
 
     def load_from_db(self):
-        ...
+        for i in range(len(self.unit_list)):
+            self.delete_unit('<Button-3>', 0)
+
+        self.unit_list = self.db_storage.load()
+
+        for unit in self.unit_list:
+            self.draw_unit(unit)
 
     def save_to_file(self):
         self.file_storage.store(self.unit_list)
