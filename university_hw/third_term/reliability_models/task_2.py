@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from PIL import ImageTk, Image
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from scheme_unit import SchemeUnit
 from storage import DBStorage, FileStorage
@@ -53,6 +55,8 @@ class MainWindow(tk.Tk):
         new_button.grid(row=4, column=0, columnspan=2)
         self.button_list.append(new_button)
 
+        self.probability_history = []
+
     def add_scheme_unit(self):
         if len(self.label_list) < self.max_unit_number:
             choose_unit_window = ChooseSchemeUnitWindow()
@@ -100,9 +104,13 @@ class MainWindow(tk.Tk):
             if not self.check_correct_entry_filling(time, critical_probability):
                 messagebox.showerror("Ошибка", "Ошибка ввода данных!")
             else:
-                ...
+                self.plot_graph()
         except ValueError:
             messagebox.showerror("Ошибка", "Ошибка ввода данных!")
+
+    def plot_graph(self):
+        graph = GraphWindow(self.probability_history)
+        self.wait_window(graph)
 
     @staticmethod
     def check_correct_entry_filling(time_entry_value: int, probability_entry_value: float) -> bool:
@@ -269,6 +277,19 @@ class EditUnitWindow(tk.Toplevel):
             counter += 2
 
         self.params_boxes[block_id] = params_boxes_list
+
+
+class GraphWindow(tk.Toplevel):
+    def __init__(self, data, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.title('График P/t')
+        self.fig = Figure(figsize=(5, 5), dpi=100)
+        self.ax = self.fig.add_subplot(111)
+        self.ax.plot(data)
+
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
 
 m = MainWindow()
