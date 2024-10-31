@@ -37,7 +37,7 @@ class Distribution:
             self.params['lambda'] = 0.015
             self.params['alpha'] = 0.01
         else:
-            self.params['sigma'] = 0.015
+            self.params['alpha'] = 0.015
 
     def change_params(self, params: list[float]):
         if self.type == 'Экспоненциальное':
@@ -49,7 +49,7 @@ class Distribution:
             self.params['lambda'] = 0
             self.params['alpha'] = 0
         else:
-            self.params['sigma'] = 0.015
+            self.params['alpha'] = 0.015
 
         i = 0
         for key in self.params.keys():
@@ -58,11 +58,13 @@ class Distribution:
 
     def calc_probability(self, t: int):
         if self.type == 'Экспоненциальное':
-            return self.params['lambda'] * exp(-self.params['lambda'] * t)
+            return exp(-self.params['lambda'] * t)
         elif self.type == 'Нормальное':
             ...
         elif self.type == 'Вейбулла-Гнеденко':
-            return (self.params['lambda'] * self.params['alpha'] * t ** (self.params['alpha'] - 1)
-                    * exp(-self.params['lambda'] * t ** (self.params['alpha'])))
+            return exp(-self.params['lambda'] * t ** (self.params['alpha']))
         else:
-            return exp(-t ** 2 / (2 * self.params['sigma'] ** 2))
+            if t <= 0:
+                return 0
+            else:
+                return exp(-t ** 2 / (2 * self.params['alpha'] ** 2))

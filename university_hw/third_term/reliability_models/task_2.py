@@ -99,9 +99,9 @@ class MainWindow(tk.Tk):
 
     def start_calc(self):
         try:
-            time, critical_probability = int(self.time_period_entry.get()), float(self.probability_entry.get())
+            time_limit, critical_probability = int(self.time_period_entry.get()), float(self.probability_entry.get())
 
-            if not self.check_correct_entry_filling(time, critical_probability):
+            if not self.check_correct_entry_filling(time_limit, critical_probability):
                 messagebox.showerror("Ошибка", "Ошибка ввода данных!")
             else:
                 self.plot_graph()
