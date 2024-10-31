@@ -3,6 +3,7 @@
 8           String to Integer (atoi)                                Medium
 14          Longest Common Prefix                                   Easy
 19          Remove Nth Node From End of List                        Medium
+21          Merge Two Sorted Lists                                  Easy
 26          Remove Duplicates From Sorted Array                     Easy
 28          Find the Index of the First Occurrence in a String      Easy
 36          Valid Sudoku                                            Medium
