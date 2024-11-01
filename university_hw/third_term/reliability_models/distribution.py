@@ -1,4 +1,5 @@
 from math import exp
+from scipy.stats import norm
 
 
 class Distribution:
@@ -31,13 +32,13 @@ class Distribution:
         if self.type == 'Экспоненциальное':
             self.params['lambda'] = 0.015
         elif self.type == 'Нормальное':
-            self.params['mu'] = 0.01
-            self.params['sigma'] = 0.015
+            self.params['mu'] = 100
+            self.params['sigma'] = 20
         elif self.type == 'Вейбулла-Гнеденко':
             self.params['lambda'] = 0.015
-            self.params['alpha'] = 0.01
+            self.params['alpha'] = 2
         else:
-            self.params['alpha'] = 0.015
+            self.params['sigma'] = 100
 
     def change_params(self, params: list[float]):
         if self.type == 'Экспоненциальное':
@@ -49,7 +50,7 @@ class Distribution:
             self.params['lambda'] = 0
             self.params['alpha'] = 0
         else:
-            self.params['alpha'] = 0.015
+            self.params['sigma'] = 0
 
         i = 0
         for key in self.params.keys():
@@ -60,11 +61,11 @@ class Distribution:
         if self.type == 'Экспоненциальное':
             return exp(-self.params['lambda'] * t)
         elif self.type == 'Нормальное':
-            ...
+            return norm.cdf(t, loc=self.params['mu'], scale=self.params['sigma'])
         elif self.type == 'Вейбулла-Гнеденко':
             return exp(-self.params['lambda'] * t ** (self.params['alpha']))
         else:
             if t <= 0:
                 return 0
             else:
-                return exp(-t ** 2 / (2 * self.params['alpha'] ** 2))
+                return exp(-t ** 2 / (2 * self.params['sigma'] ** 2))

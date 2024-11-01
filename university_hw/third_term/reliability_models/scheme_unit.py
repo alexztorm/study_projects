@@ -56,6 +56,10 @@ class SchemeUnit:
     def edit_block_time(self, block_num, new_time):
         self.times[block_num] = new_time
 
+    def move_time_by_one(self):
+        for i in range(self.number_of_blocks):
+            self.times[i] += 1
+
     def calc_probability(self) -> float:
 
         p = []
@@ -139,3 +143,11 @@ class SchemeUnit:
                     + (1 - p[0]) * p[1] * p[2] * p[3] * p[4] * p[5]
                     + p[0] * p[1] * p[2] * p[3] * p[4] * p[5])
 
+    def change_worst_block(self):
+        p = []
+        for i in range(self.number_of_blocks):
+            p.append(self.distribution[i].calc_probability(self.times[i]))
+
+        min_block = p.index(min(p))
+
+        self.times[min_block] = 0

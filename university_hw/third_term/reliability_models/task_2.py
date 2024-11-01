@@ -55,7 +55,8 @@ class MainWindow(tk.Tk):
         new_button.grid(row=4, column=0, columnspan=2)
         self.button_list.append(new_button)
 
-        self.probability_history = []
+        self.probability_history = [1]
+        self.changes_history = {}
 
     def add_scheme_unit(self):
         if len(self.label_list) < self.max_unit_number:
@@ -99,18 +100,48 @@ class MainWindow(tk.Tk):
 
     def start_calc(self):
         try:
-            time_limit, critical_probability = int(self.time_period_entry.get()), float(self.probability_entry.get())
+            time_limit, p_crit = int(self.time_period_entry.get()), float(self.probability_entry.get())
 
-            if not self.check_correct_entry_filling(time_limit, critical_probability):
+            if not self.check_correct_entry_filling(time_limit, p_crit):
                 messagebox.showerror("Ошибка", "Ошибка ввода данных!")
             else:
-                self.plot_graph()
+
+                for i in range(time_limit):
+                    p_curr = 1
+
+                    probs = []
+                    for unit in self.unit_list:
+                        unit.move_time_by_one()
+                        probs.append(unit.calc_probability())
+
+                    for prob in probs:
+                        p_curr *= prob
+
+                    num_changes = 0
+                    while p_curr <= p_crit:
+                        min_unit = probs.index(min(probs))
+
+                        self.unit_list[min_unit].change_worst_block()
+                        num_changes += 1
+
+                        probs[min_unit] = self.unit_list[min_unit].calc_probability()
+
+                        p_curr = 1
+                        for prob in probs:
+                            p_curr *= prob
+
+                    if num_changes > 0:
+                        self.changes_history[i] = num_changes
+
+                    self.probability_history.append(p_curr)
+
+                self.show_result()
         except ValueError:
             messagebox.showerror("Ошибка", "Ошибка ввода данных!")
 
-    def plot_graph(self):
-        graph = GraphWindow(self.probability_history)
-        self.wait_window(graph)
+    def show_result(self):
+        res = ResultWindow(self.probability_history, self.changes_history)
+        self.wait_window(res)
 
     @staticmethod
     def check_correct_entry_filling(time_entry_value: int, probability_entry_value: float) -> bool:
@@ -279,17 +310,30 @@ class EditUnitWindow(tk.Toplevel):
         self.params_boxes[block_id] = params_boxes_list
 
 
-class GraphWindow(tk.Toplevel):
-    def __init__(self, data, *args, **kwargs):
+class ResultWindow(tk.Toplevel):
+    def __init__(self, data, changes, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title('График P/t')
+        self.title('Результаты')
         self.fig = Figure(figsize=(5, 5), dpi=100)
         self.ax = self.fig.add_subplot(111)
         self.ax.plot(data)
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.draw()
-        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.canvas.get_tk_widget().grid(row=0, column=0, rowspan=2)
+
+        overall_changes = 0
+        changes_list = ""
+
+        for key in changes.keys():
+            overall_changes += changes[key]
+            changes_list += f'В {key} месяц проведено {changes[key]} замен\n'
+
+        self.all_changes_label = tk.Label(self, text=f'Всего замен: {overall_changes}')
+        self.all_changes_label.grid(row=0, column=1)
+
+        self.list_of_changes_label = tk.Label(self, text=changes_list)
+        self.list_of_changes_label.grid(row=1, column=1)
 
 
 m = MainWindow()
