@@ -3,8 +3,8 @@ def learn_algorithms(n: int, a: list[int], b: list[int], p: list[int]) -> list[i
     ids = list(range(1, n + 1))
     learned = set()
 
-    list_a = sorted(zip(a, b, ids), reverse=True, key=sort_by_a)
-    list_b = sorted(zip(a, b, ids), reverse=True, key=sort_by_b)
+    list_a = sorted(zip(a, b, ids), reverse=True, key=lambda x: (x[0], x[1], -x[2]))
+    list_b = sorted(zip(a, b, ids), reverse=True, key=lambda x: (x[1], x[0], -x[2]))
 
     # for i in range(n):
     #     print(list_a[i], list_b[i])
@@ -28,14 +28,6 @@ def learn_algorithms(n: int, a: list[int], b: list[int], p: list[int]) -> list[i
                 list_b_it += 1
 
     return res
-
-
-def sort_by_a(item):
-    return item[0] + item[1] / 10 ** 10 - item[2] / 10 ** 11
-
-
-def sort_by_b(item):
-    return item[1] + item[0] / 10 ** 10 - item[2] / 10 ** 11
 
 
 # m = int(input())
