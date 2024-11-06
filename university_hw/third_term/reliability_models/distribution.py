@@ -61,7 +61,7 @@ class Distribution:
         if self.type == 'Экспоненциальное':
             return exp(-self.params['lambda'] * t)
         elif self.type == 'Нормальное':
-            return norm.cdf(t, loc=self.params['mu'], scale=self.params['sigma'])
+            return 0.5 + 0.5 * norm.cdf(t, loc=self.params['mu'], scale=self.params['sigma'])
         elif self.type == 'Вейбулла-Гнеденко':
             return exp(-self.params['lambda'] * t ** (self.params['alpha']))
         else:
