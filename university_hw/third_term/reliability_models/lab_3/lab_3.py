@@ -52,20 +52,27 @@ class MainWindow(tk.Tk):
 
     def update_line_on_leave(self, event, row, column):
         if column == 1:
-            R = int(self.entry_table[row][column].get())
-            dr = int(self.entry_table[row][3].get())
+            R = self.entry_table[row][column].get()
+            d = self.entry_table[row][2].get()
+            dr = self.entry_table[row][3].get()
             if R and dr:
-                self.entry_table[row][2].insert(0, f'{int(R * dr)}')
+                self.entry_table[row][2].delete(0, 'end')
+                self.entry_table[row][2].insert(0, f'{int(int(R) * float(dr))}')
+            elif R and d and R != 0:
+                self.entry_table[row][3].delete(0, 'end')
+                self.entry_table[row][3].insert(0, f'{int(d) / int(R)}')
         elif column == 2:
-            R = int(self.entry_table[row][1].get())
-            d = int(self.entry_table[row][column].get())
+            R = self.entry_table[row][1].get()
+            d = self.entry_table[row][column].get()
             if R and d and R != 0:
-                self.entry_table[row][3].insert(0, f'{d / R}')
+                self.entry_table[row][3].delete(0, 'end')
+                self.entry_table[row][3].insert(0, f'{int(d) / int(R)}')
         elif column == 3:
-            d = int(self.entry_table[row][2].get())
-            dr = int(self.entry_table[row][column].get())
-            if d and dr:
-                self.entry_table[row][2].insert(0, f'{int(d / dr)}')
+            R = self.entry_table[row][1].get()
+            dr = self.entry_table[row][column].get()
+            if R and dr:
+                self.entry_table[row][2].delete(0, 'end')
+                self.entry_table[row][2].insert(0, f'{int(int(R) * float(dr))}')
 
     def update_line_on_return(self, event):
         self.focus_set()
