@@ -2,14 +2,18 @@ import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from storage import DBStorage, FileStorage
+
 
 class MainWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.data = []
         self.buttons = []
         self.labels = []
         self.entry_table = []
+
+        self.db_storage = DBStorage()
+        self.file_storage = FileStorage()
 
         self.setup_labels()
         self.setup_buttons()
@@ -60,13 +64,13 @@ class MainWindow(tk.Tk):
                 self.entry_table[row][2].insert(0, f'{int(int(R) * float(dr))}')
             elif R and d and R != 0:
                 self.entry_table[row][3].delete(0, 'end')
-                self.entry_table[row][3].insert(0, f'{int(d) / int(R)}')
+                self.entry_table[row][3].insert(0, f'{int(d) / int(R): .2f}')
         elif column == 2:
             R = self.entry_table[row][1].get()
             d = self.entry_table[row][column].get()
             if R and d and R != 0:
                 self.entry_table[row][3].delete(0, 'end')
-                self.entry_table[row][3].insert(0, f'{int(d) / int(R)}')
+                self.entry_table[row][3].insert(0, f'{int(d) / int(R): .2f}')
         elif column == 3:
             R = self.entry_table[row][1].get()
             dr = self.entry_table[row][column].get()
@@ -77,23 +81,48 @@ class MainWindow(tk.Tk):
     def update_line_on_return(self, event):
         self.focus_set()
 
+    def get_table_values(self):
+        values = []
+        for line in self.entry_table:
+            new_line = []
+            full_line_flag = True
+            for i in range(len(line)):
+                input_value = line[i].get()
+                if input_value:
+                    if i == 3:
+                        new_line.append(float(line[i].get()))
+                    else:
+                        new_line.append(int(line[i].get()))
+                else:
+                    full_line_flag = False
+                    break
+            if full_line_flag:
+                values.append(new_line)
+
+        return values
+
     def start_calc(self):
         ...
 
     def db_store(self):
-        ...
+        self.db_storage.store(self.get_table_values())
 
     def db_load(self):
-        ...
+        values = self.db_storage.load()
+        self.update_table(values)
 
     def file_store(self):
-        ...
+        self.file_storage.store(self.get_table_values())
 
     def file_load(self):
+        values = self.file_storage.load()
+        self.update_table(values)
+
+    def update_table(self, new_values):
         ...
 
     def show_results(self):
-        result_window = ResultWindow(self.data)
+        result_window = ResultWindow(self.get_table_values())
         self.wait_window(result_window)
 
     def move_buttons_down(self):
