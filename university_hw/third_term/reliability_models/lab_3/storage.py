@@ -25,7 +25,6 @@ class DBStorage:
         for row in rows:
             load_data.append(list(row))
 
-        print(load_data)
         return load_data
 
     def clear_storage(self):
@@ -38,10 +37,26 @@ class DBStorage:
 
 class FileStorage:
     def __init__(self):
-        ...
+        self.file_name = 'storage.txt'
 
     def store(self, data):
-        ...
+        with open(self.file_name, 'w') as save_file:
+            for line in data:
+                save_file.write(" ".join(map(str, line)))
+                save_file.write('\n')
 
     def load(self):
-        ...
+        with open(self.file_name, 'r') as load_file:
+            content = load_file.read().split('\n')
+            content.pop()
+
+            load_data = []
+            for i in range(len(content)):
+                load_data.append(content[i].split())
+                for j in range(len(load_data[i])):
+                    if j == 3:
+                        load_data[i][j] = float(load_data[i][j])
+                    else:
+                        load_data[i][j] = int(load_data[i][j])
+
+            return load_data

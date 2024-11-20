@@ -1,6 +1,9 @@
 import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from math import sqrt
+from matplotlib import pyplot as plt
+from scipy.stats import norm
 
 from storage import DBStorage, FileStorage
 
@@ -8,6 +11,7 @@ from storage import DBStorage, FileStorage
 class MainWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.res = []
         self.buttons = []
         self.labels = []
         self.entry_table = []
@@ -64,13 +68,13 @@ class MainWindow(tk.Tk):
                 self.entry_table[row][2].insert(0, f'{int(int(R) * float(dr))}')
             elif R and d and R != 0:
                 self.entry_table[row][3].delete(0, 'end')
-                self.entry_table[row][3].insert(0, f'{int(d) / int(R): .2f}')
+                self.entry_table[row][3].insert(0, f'{int(d) / int(R)}')
         elif column == 2:
             R = self.entry_table[row][1].get()
             d = self.entry_table[row][column].get()
             if R and d and R != 0:
                 self.entry_table[row][3].delete(0, 'end')
-                self.entry_table[row][3].insert(0, f'{int(d) / int(R): .2f}')
+                self.entry_table[row][3].insert(0, f'{int(d) / int(R)}')
         elif column == 3:
             R = self.entry_table[row][1].get()
             dr = self.entry_table[row][column].get()
@@ -101,9 +105,6 @@ class MainWindow(tk.Tk):
 
         return values
 
-    def start_calc(self):
-        ...
-
     def db_store(self):
         self.db_storage.store(self.get_table_values())
 
@@ -119,10 +120,53 @@ class MainWindow(tk.Tk):
         self.update_table(values)
 
     def update_table(self, new_values):
-        ...
+        self.drop_table()
+
+        for i in range(len(new_values)):
+            self.add_line()
+            for j in range(len(new_values[i])):
+                self.entry_table[i][j].insert(0, new_values[i][j])
+
+    def drop_table(self):
+        for i in range(len(self.entry_table) - 1, -1, -1):
+            for j in range(len(self.entry_table[i]) - 1, -1, -1):
+                self.entry_table[i][j].destroy()
+                self.entry_table[i].pop()
+            self.entry_table.pop()
+
+    def start_calc(self):
+        values = self.get_table_values()
+
+        s = [1] * (len(values) + 1)
+        s_plus_sigma = [1] * (len(values) + 1)
+        s_minus_sigma = [1] * (len(values) + 1)
+        sum = 0
+        times = [0] * (len(values) + 1)
+
+        quantile = norm.ppf(0.95, loc=0, scale=1)
+
+        for i in range(len(values)):
+            s[i + 1] = s[i] * (int(values[i][1]) - int(values[i][2])) / int(values[i][1])
+            sum = sum + int(values[i][2]) / (int(values[i][1]) * (int(values[i][1]) - int(values[i][2])))
+            sigma = s[i + 1] * sqrt(sum)
+
+            s_plus_sigma[i + 1] = s[i + 1] + sigma * quantile
+            s_minus_sigma[i + 1] = s[i + 1] - sigma * quantile
+
+            if s_plus_sigma[i + 1] > 1:
+                s_plus_sigma[i + 1] = 1
+
+            if s_minus_sigma[i + 1] < 0:
+                s_minus_sigma[i + 1] = 0
+
+            times[i + 1] = int(values[i][0])
+
+        self.res = [s, s_plus_sigma, s_minus_sigma, times]
+
+        self.show_results()
 
     def show_results(self):
-        result_window = ResultWindow(self.get_table_values())
+        result_window = ResultWindow(self.res)
         self.wait_window(result_window)
 
     def move_buttons_down(self):
@@ -137,7 +181,9 @@ class ResultWindow(tk.Toplevel):
         self.title('Результаты')
         self.fig = Figure(figsize=(5, 5), dpi=100)
         self.ax = self.fig.add_subplot(111)
-        self.ax.plot(data)
+        self.ax.plot(data[3], data[0], 'ko-', drawstyle='steps-post')
+        self.ax.plot(data[3], data[1], 'k--', drawstyle='steps-post')
+        self.ax.plot(data[3], data[2], 'k--', drawstyle='steps-post')
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.draw()
