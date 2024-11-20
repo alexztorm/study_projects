@@ -4,6 +4,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from math import sqrt
 from matplotlib import pyplot as plt
 from scipy.stats import norm
+from statistics import mean
 
 from storage import DBStorage, FileStorage
 
@@ -181,6 +182,20 @@ class ResultWindow(tk.Toplevel):
         self.title('Результаты')
         self.fig = Figure(figsize=(5, 5), dpi=100)
         self.ax = self.fig.add_subplot(111)
+
+        data[3].insert(1, 0.1)
+        data[3].append(max(data[3]) + 1)
+
+        data[0].insert(0, 1)
+        data[0].insert(-1, data[0][-1])
+        print(data[0][-1])
+
+        data[1].insert(0, 1)
+        data[1].insert(0, 1)
+
+        data[2].insert(-1, data[2][-1])
+        data[2].insert(-1, data[2][-1])
+
         self.ax.plot(data[3], data[0], 'ko-', drawstyle='steps-post')
         self.ax.plot(data[3], data[1], 'k--', drawstyle='steps-post')
         self.ax.plot(data[3], data[2], 'k--', drawstyle='steps-post')
