@@ -1,4 +1,4 @@
-Solved Overall: 30
+Solved Overall: 31
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -13,6 +13,7 @@ __________________________________________________________________________
 48          Rotate Image                                            Medium
 66          Plus One                                                Easy
 88          Merge Sorted Array                                      Easy
+104         Maximum Depth of Binary Tree                            Easy
 122         Best Time to Buy and Sell Stock II                      Medium
 125         Valid Palindrome                                        Easy
 136         Single Number                                           Easy
