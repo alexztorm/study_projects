@@ -126,20 +126,36 @@ class HolstedsMetric:
         return files
 
     def form_result(self):
-        N1 = len(self.operators)
-        N2 = len(self.operands)
-        n1 = len(set(self.operators))
-        n2 = len(set(self.operands))
+        N1 = len(self.operators)            # общее число операторов в программе
+        N2 = len(self.operands)             # общее число операндов в программе
+        n1 = len(set(self.operators))       # число уникальных операторов программы
+        n2 = len(set(self.operands))        # число уникальных операндов программы
+
+        N = N1 + N2                         # длина программы
+        n = n1 + n2                         # словарь программы
+        Nt = n1 * log2(n1) + n2 * log2(n2)  # теоретическая длина программы
+
+        V = N * log2(n)                     # объем программы
+        Lt = (2 * n2) / (n1 * N2)           # уровень качества программирования
+        Ec = V / Lt ** 2                    # сложность понимания программы
+        D = 1 / Lt                          # трудоемкость кодирования программы
+        yt = V / D ** 2                     # уровень языка выражения
+        I = V / D                           # умственные затраты на создание программы
 
         metrics = {
             'n1': n1,
             'n2': n2,
             'N1': N1,
             'N2': N2,
-            'n': n1 + n2,
-            'N': N1 + N2,
-            'V': (N1 + N2) * log2(n1 + n2),
-            'C': n1 * log2(n1) + n2 * log2(n2)
+            'n': n,
+            'N': N,
+            'N\'': Nt,
+            'V': V,
+            'L\'': Lt,
+            'Ec': Ec,
+            'D': D,
+            'y\'': yt,
+            'I': I
         }
 
         self.result.append(metrics)
