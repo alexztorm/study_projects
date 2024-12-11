@@ -3,7 +3,9 @@ from math import log2
 
 
 class HolstedsMetric:
-    def __init__(self):
+    def __init__(self, files=None):
+        self.data = files
+
         with open('operators.txt', 'r') as operators_list:
             self.operators_dict = operators_list.read().split('\n')
 
@@ -14,19 +16,34 @@ class HolstedsMetric:
         self.file_names = []
 
     def start(self):
-        files = self.read_examples()
+        self.clear_containers()
 
-        for file in files:
-            with open('./examples/' + file, 'r') as read_file:
-                code = read_file.read()
-                self.count_operators_and_operands(code)
-                self.form_result()
-                self.file_names.append(file)
+        if not self.data:
+            files = self.read_examples()
 
-                self.operators = []
-                self.operands = []
+            for file in files:
+                with open('./examples/' + file, 'r') as read_file:
+                    code = read_file.read()
+                    self.count_operators_and_operands(code)
+                    self.form_result()
+                    self.file_names.append(file)
 
-        self.output()
+                    self.operators = []
+                    self.operands = []
+
+            self.output()
+        else:
+            for file in self.data:
+                with open('./examples/' + file, 'r') as read_file:
+                    code = read_file.read()
+                    self.count_operators_and_operands(code)
+                    self.form_result()
+                    self.file_names.append(file)
+
+                    self.operators = []
+                    self.operands = []
+
+            return self.result
 
     def count_operators_and_operands(self, code):
         contents = []
@@ -164,6 +181,11 @@ class HolstedsMetric:
         for i in range(len(self.result)):
             print(f'{self.file_names[i]} - {self.result[i]}')
 
+    def set_data(self, new_data):
+        self.data = new_data
 
-h = HolstedsMetric()
-h.start()
+    def clear_containers(self):
+        self.operators = []
+        self.operands = []
+        self.result = []
+        self.file_names = []
