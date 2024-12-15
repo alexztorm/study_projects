@@ -166,12 +166,12 @@ class HolstedsMetric:
             'N2': N2,
             'n': n,
             'N': N,
-            'N\'': Nt,
+            'Nt': Nt,
             'V': V,
-            'L\'': Lt,
+            'Lt': Lt,
             'Ec': Ec,
             'D': D,
-            'y\'': yt,
+            'yt': yt,
             'I': I
         }
 

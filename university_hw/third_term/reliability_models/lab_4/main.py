@@ -4,6 +4,7 @@ from tkinter import messagebox
 from os import listdir
 
 from holsted import HolstedsMetric
+from storage import DBStorage
 
 
 class MainWindow(tk.Tk):
@@ -27,6 +28,8 @@ class MainWindow(tk.Tk):
         self.chosen_files = []
 
         self.experiment_num = 0
+
+        self.db_storage = DBStorage()
 
     def setup_frame1(self):
         files = listdir(self.example_path)
@@ -68,6 +71,8 @@ class MainWindow(tk.Tk):
 
         if not at_least_one_chosen:
             messagebox.showwarning("Внимание", "Выберите хотя бы один файл!")
+            self.buttons[1]['state'] = 'disabled'
+            self.buttons[2]['state'] = 'disabled'
         else:
             self.buttons[1]['state'] = 'normal'
             self.buttons[2]['state'] = 'normal'
@@ -84,6 +89,8 @@ class MainWindow(tk.Tk):
             print(len(res))
             for line in res:
                 print(line)
+
+            self.db_storage.store_holsted(res, self.experiment_num)
         else:
             ...
 
