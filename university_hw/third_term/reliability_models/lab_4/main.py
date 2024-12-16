@@ -4,6 +4,7 @@ from tkinter import messagebox
 from os import listdir
 
 from holsted import HolstedsMetric
+from chepin import ChepinMetric
 from storage import DBStorage
 
 
@@ -25,6 +26,8 @@ class MainWindow(tk.Tk):
         self.setup_frame2()
 
         self.holsted_calculator = HolstedsMetric()
+        self.chepin_calculator = ChepinMetric()
+
         self.chosen_files = []
 
         self.experiment_num = 0
@@ -86,16 +89,21 @@ class MainWindow(tk.Tk):
             self.holsted_calculator.set_data(self.chosen_files)
             res = self.holsted_calculator.start()
 
+            self.db_storage.store_holsted(res, self.experiment_num, self.chosen_files)
+        else:
+            self.chepin_calculator.set_data(self.chosen_files)
+            res = self.chepin_calculator.start()
+
             print(len(res))
             for line in res:
                 print(line)
 
-            self.db_storage.store_holsted(res, self.experiment_num)
-        else:
-            ...
-
     def button_report(self):
-        ...
+        res, _ = self.db_storage.load()
+
+        print(len(res))
+        for line in res:
+            print(line)
 
 
 m = MainWindow()
