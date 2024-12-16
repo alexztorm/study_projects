@@ -6,10 +6,11 @@ class DBStorage:
         self.conn = sqlite3.connect('storage.db')
         self.cur = self.conn.cursor()
 
+        self.clear_storage()
         self.setup_tables()
 
         self.holsted_keys = ['n1', 'n2', 'N1', 'N2', 'n', 'N', 'Nt', 'V', 'Lt', 'Ec', 'D', 'yt', 'I']
-        self.chepin_keys = []
+        self.chepin_keys = ['P', 'M', 'C', 'T', 'CHEPIN']
 
     def setup_tables(self):
         self.cur.execute('CREATE TABLE IF NOT EXISTS data_holsted '
@@ -17,7 +18,8 @@ class DBStorage:
                          'nb1 INTEGER, nb2 INTEGER, n INTEGER, nb INTEGER, Nt REAL, V REAL, Lt REAL, Ec REAL, D REAL, '
                          'yt REAL, I REAL, file_name TEXT)')
         self.cur.execute('CREATE TABLE IF NOT EXISTS data_chepin '
-                         '(id INTEGER PRIMARY KEY AUTOINCREMENT, experiment_num INTEGER)')
+                         '(id INTEGER PRIMARY KEY AUTOINCREMENT, experiment_num INTEGER, P INTEGER, M INTEGER, '
+                         'C INTEGER, T INTEGER, CHEPIN REAL, file_name TEXT)')
         self.conn.commit()
 
     def store_holsted(self, data, exp_num, file_names):
@@ -26,10 +28,18 @@ class DBStorage:
         for i in range(len(data)):
             values = [exp_num] + list(data[i].values()) + [file_names[i]]
             self.cur.execute(insert_query, values)
+
         self.conn.commit()
 
-    def store_chepin(self):
-        ...
+    def store_chepin(self, data, exp_num, file_names):
+        insert_query = ('INSERT INTO data_chepin (experiment_num, P, M, C, T, CHEPIN, file_name) '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?)')
+
+        for i in range(len(data)):
+            values = [exp_num] + list(data[i].values()) + [file_names[i]]
+            self.cur.execute(insert_query, values)
+
+        self.conn.commit()
 
     def load(self):
         return self.load_holsted(), self.load_chepin()
@@ -51,7 +61,21 @@ class DBStorage:
         return output
 
     def load_chepin(self):
-        return []
+        self.cur.execute('SELECT * FROM data_chepin')
+        rows = self.cur.fetchall()
+
+        output = []
+
+        for row in rows:
+            output_line = [row[1]]
+            new_dict = {}
+            for i in range(len(self.chepin_keys)):
+                new_dict[self.chepin_keys[i]] = row[i + 2]
+            output_line.append(new_dict)
+            output_line.append(row[7])
+            output.append(output_line)
+
+        return output
 
     def clear_storage(self):
         self.cur.execute('DROP TABLE IF EXISTS data_holsted')

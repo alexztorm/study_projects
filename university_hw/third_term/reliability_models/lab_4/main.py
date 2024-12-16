@@ -94,15 +94,17 @@ class MainWindow(tk.Tk):
             self.chepin_calculator.set_data(self.chosen_files)
             res = self.chepin_calculator.start()
 
-            print(len(res))
-            for line in res:
-                print(line)
+            self.db_storage.store_chepin(res, self.experiment_num, self.chosen_files)
 
     def button_report(self):
-        res, _ = self.db_storage.load()
+        res1, res2 = self.db_storage.load()
 
-        print(len(res))
-        for line in res:
+        print(len(res1))
+        for line in res1:
+            print(line)
+
+        print(len(res2))
+        for line in res2:
             print(line)
 
 
