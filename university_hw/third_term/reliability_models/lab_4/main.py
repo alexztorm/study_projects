@@ -6,6 +6,7 @@ from os import listdir
 from holsted import HolstedsMetric
 from chepin import ChepinMetric
 from storage import DBStorage
+from report_maker import ReportMaker
 
 
 class MainWindow(tk.Tk):
@@ -33,6 +34,7 @@ class MainWindow(tk.Tk):
         self.experiment_num = 0
 
         self.db_storage = DBStorage()
+        self.report_maker = ReportMaker()
 
     def setup_frame1(self):
         files = listdir(self.example_path)
@@ -99,13 +101,9 @@ class MainWindow(tk.Tk):
     def button_report(self):
         res1, res2 = self.db_storage.load()
 
-        print(len(res1))
-        for line in res1:
-            print(line)
+        res = res1 + res2
 
-        print(len(res2))
-        for line in res2:
-            print(line)
+        self.report_maker.make_report(res)
 
 
 m = MainWindow()
