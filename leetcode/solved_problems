@@ -1,4 +1,4 @@
-Solved Overall: 34
+Solved Overall: 35
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -32,6 +32,7 @@ __________________________________________________________________________
 383         Ransom Note                                             Easy
 387         First Unique Character in a String                      Easy
 412         Fizz Buzz                                               Easy
+1004        Max Consecutive Ones III                                Medium
 1342        Number of Steps to Reduce a Number to Zero              Easy
 1672        Richest Customer Wealth                                 Easy
 1679        Max Number of K-Sum Pairs                               Medium
