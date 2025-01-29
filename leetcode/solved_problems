@@ -1,4 +1,4 @@
-Solved Overall: 35
+Solved Overall: 36
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -36,3 +36,4 @@ __________________________________________________________________________
 1342        Number of Steps to Reduce a Number to Zero              Easy
 1672        Richest Customer Wealth                                 Easy
 1679        Max Number of K-Sum Pairs                               Medium
+2095        Delete the Middle Node of a Linked List                 Medium
