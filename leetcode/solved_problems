@@ -1,4 +1,4 @@
-Solved Overall: 36
+Solved Overall: 37
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -34,6 +34,7 @@ __________________________________________________________________________
 412         Fizz Buzz                                               Easy
 1004        Max Consecutive Ones III                                Medium
 1342        Number of Steps to Reduce a Number to Zero              Easy
+1657        Determine if Two Strings Are Close                      Medium
 1672        Richest Customer Wealth                                 Easy
 1679        Max Number of K-Sum Pairs                               Medium
 2095        Delete the Middle Node of a Linked List                 Medium
