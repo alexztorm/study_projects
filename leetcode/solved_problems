@@ -1,4 +1,4 @@
-Solved Overall: 38
+Solved Overall: 39
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -20,6 +20,7 @@ __________________________________________________________________________
 141         Linked List Cycle                                       Easy
 151         Reverse Words in a String                               Medium
 189         Rotate Array                                            Medium
+198         House Robber                                            Medium
 206         Reverse Linked List                                     Easy
 215         Kth Largest Element in an Array                         Medium
 217         Contains Duplicate                                      Easy
