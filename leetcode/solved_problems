@@ -1,4 +1,4 @@
-Solved Overall: 39
+Solved Overall: 40
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -29,6 +29,7 @@ __________________________________________________________________________
 237         Delete Node in a Linked List                            Medium
 242         Valid Anagram                                           Easy
 283         Move Zeroes                                             Easy
+326         Power of Three                                          Easy
 344         Reverse String                                          Easy
 350         Intersection of Two Arrays II                           Easy
 383         Ransom Note                                             Easy
