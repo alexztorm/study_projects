@@ -1,4 +1,4 @@
-Solved Overall: 41
+Solved Overall: 42
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -37,6 +37,7 @@ __________________________________________________________________________
 387         First Unique Character in a String                      Easy
 412         Fizz Buzz                                               Easy
 649         Dota2 Senate                                            Medium
+841         Keys and Rooms                                          Medium
 1004        Max Consecutive Ones III                                Medium
 1342        Number of Steps to Reduce a Number to Zero              Easy
 1657        Determine if Two Strings Are Close                      Medium
