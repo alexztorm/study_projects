@@ -1,4 +1,4 @@
-Solved Overall: 43
+Solved Overall: 44
 Link to LeetCode: https://leetcode.com/u/alexztorm/
 __________________________________________________________________________
 1           Two Sum                                                 Easy
@@ -40,6 +40,7 @@ __________________________________________________________________________
 649         Dota2 Senate                                            Medium
 841         Keys and Rooms                                          Medium
 1004        Max Consecutive Ones III                                Medium
+1143        Longest Common Subsequence                              Medium
 1342        Number of Steps to Reduce a Number to Zero              Easy
 1657        Determine if Two Strings Are Close                      Medium
 1672        Richest Customer Wealth                                 Easy
