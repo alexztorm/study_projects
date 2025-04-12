@@ -1,5 +1,5 @@
 import numpy as np
-from math import exp, pi, sqrt
+from math import exp, sqrt
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import functions as f
@@ -58,13 +58,37 @@ d = D - 2 * delta  # внутренний диаметр
 L = abs(x_end - x_start)  # длина трубы
 # 2.4. Итерации для вычисления скорости нефти (важно, она постоянная) по двум точкам
 lmb = 0.02
-print(2 * abs(p_start - p_end) * d / (lmb * L * rho))
 v = sqrt(2 * abs(p_start - p_end) * d / (lmb * L * rho))
 re = v * d / nu
+new_lmb = f.calc_lambda(re, d, roughness)
 
-lmb = f.calc_lambda(re, d, roughness)
-print(lmb)
-lmb = f.calc_lambda(re, d, roughness, use_colebrook_white=True)
-print(lmb)
+while abs(new_lmb - lmb) > 10e3:
+    lmb = new_lmb
+    v = sqrt(2 * abs(p_start - p_end) * d / (lmb * L * rho))
+    re = v * d / nu
+    new_lmb = f.calc_lambda(re, d, roughness)
+
+x_km = [el / 1000 for el in x]  # сетка в км
+p_mpa = [p_start - (p_start - p_end) * el / 10e6 for el in x]  # Давление вдоль трубопровода
+
+fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+fig.suptitle('Стационарный режим')
+
+ax[0].plot(x_km, p_mpa, label='Давление', color='blue')
+ax[0].set_title('Изменение давления от расстояния')
+ax[0].set_xlabel('Расстояние (км)')
+ax[0].set_ylabel('Давление (МПа)')
+ax[0].grid()
+ax[0].legend()
+
+ax[1].plot(x_km, [v]*len(x_km), label='Скорость', color='orange')
+ax[1].set_title('Изменение скорости от расстояния')
+ax[1].set_xlabel('Расстояние (км)')
+ax[1].set_ylabel('Скорость (м/с)')
+ax[1].grid()
+ax[1].legend()
+
+plt.tight_layout()
+plt.show()
 
 # 2.5. Распространение всех полученных результатов в цикле для каждой точки сетки
