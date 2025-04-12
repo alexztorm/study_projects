@@ -1,3 +1,4 @@
+import math
 from math import log
 
 
@@ -32,3 +33,28 @@ def get_K(nu1: float, nu2: float, t1: float, t2: float) -> float:
     '''
 
     return 1 / (t2 - t1) * log(nu1 / nu2)
+
+
+def calc_lambda(re: float, d: float, roughness: float, use_colebrook_white=False, accuracy=10e6):
+    if use_colebrook_white:
+        lmbd = 0.04
+        lmbd_new = 0.25 / (math.log10(roughness / (3.7 * d) + 5.74 / re ** 0.9)) ** 2
+
+        while abs(lmbd - lmbd_new) > accuracy:
+            lmbd = lmbd_new
+            lmbd_new = 0.25 / (math.log10(roughness / (3.7 * d) + 5.74 / re ** 0.9)) ** 2
+
+        return lmbd_new
+    else:
+        eps = roughness / d
+        if re <= 2320:
+            return 64 / re
+        elif re <= 10000:
+            gamma = 1 - math.exp(-0.002 * (re - 2320))
+            return 64 / re * (1 - gamma) + 0.3164 / re ** 0.25 * gamma
+        elif re <= 10 / eps:
+            return 0.3164 / re ** 0.25
+        elif re <= 500 / eps:
+            return 0.11 * (eps + 68 / re) ** 0.25
+        else:
+            return 0.11 * eps ** 0.25

@@ -1,7 +1,10 @@
 import numpy as np
-from functions import get_ksi, get_K
-from math import exp
+from math import exp, pi, sqrt
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import functions as f
 
+# 1. Исходные данные
 # Начальные параметры по вариантам
 x_start = 0  # км, начало отрезка
 x_end = 106.6  # км, конец отрезка
@@ -21,10 +24,10 @@ x_end = x_end * 1000  # м
 D = D / 1000  # м
 delta = delta / 1000  # м
 roughness = roughness / 1000  # м
-nu_20 = nu_20 * 10 ** (-6)  # м2/с
-nu_50 = nu_50 * 10 ** (-6)  # м2/с
-p_start = p_start * 10 ** 6  # Па
-p_end = p_end * 10 ** 6  # Па
+nu_20 = nu_20 * 10e-6  # м2/с
+nu_50 = nu_50 * 10e-6  # м2/с
+p_start = p_start * 10e6  # Па
+p_end = p_end * 10e6  # Па
 
 # Начальные параметры, задающиеся пользователем
 c = input('Введите значение скорость звука (с) - ')  # м/с, скорость звука
@@ -44,9 +47,24 @@ else:
 dx = (x_end - x_start) / n  # шаг по пространству
 dt = int(c / dx)  # шаг по времени
 
-# Стационарная модель
+# 2. Стационарная модель
+# 2.1. Создание расчетной сетки модели с шагом dx
 x = np.arange(x_start, x_end + dx, dx).tolist()  # сетка расчетной модели
-rho = rho_20 * (1 + get_ksi(rho_20) * (20 - T))  # плотность при расчетной температуре
-nu = nu_20 * exp(-get_K(nu_20, nu_50, 20, 50) * (T - 20))  # вязкость при расчетной температуре
+# 2.2. Вычисление реологии при расчетной температуре
+rho = rho_20 * (1 + f.get_ksi(rho_20) * (20 - T))  # плотность при расчетной температуре
+nu = nu_20 * exp(-f.get_K(nu_20, nu_50, 20, 50) * (T - 20))  # вязкость при расчетной температуре
+# 2.3. Предварительный расчет (внутренний диаметр, длина трубы)
 d = D - 2 * delta  # внутренний диаметр
-L = x_start - x_end  # длина трубы
+L = abs(x_end - x_start)  # длина трубы
+# 2.4. Итерации для вычисления скорости нефти (важно, она постоянная) по двум точкам
+lmb = 0.02
+print(2 * abs(p_start - p_end) * d / (lmb * L * rho))
+v = sqrt(2 * abs(p_start - p_end) * d / (lmb * L * rho))
+re = v * d / nu
+
+lmb = f.calc_lambda(re, d, roughness)
+print(lmb)
+lmb = f.calc_lambda(re, d, roughness, use_colebrook_white=True)
+print(lmb)
+
+# 2.5. Распространение всех полученных результатов в цикле для каждой точки сетки
