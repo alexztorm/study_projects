@@ -45,11 +45,10 @@ else:
     n = int(n)
 
 dx = (x_end - x_start) / n  # шаг по пространству
-dt = int(c / dx)  # шаг по времени
 
 # 2. Стационарная модель
 # 2.1. Создание расчетной сетки модели с шагом dx
-x = np.arange(x_start, x_end + dx, dx).tolist()  # сетка расчетной модели
+x = np.arange(x_start, x_end + dx / 10, dx).tolist()  # сетка расчетной модели
 # 2.2. Вычисление реологии при расчетной температуре
 rho = rho_20 * (1 + f.get_ksi(rho_20) * (20 - T))  # плотность при расчетной температуре
 nu = nu_20 * exp(-f.get_K(nu_20, nu_50, 20, 50) * (T - 20))  # вязкость при расчетной температуре
@@ -62,7 +61,7 @@ v = sqrt(2 * abs(p_start - p_end) * d / (lmb * L * rho))
 re = v * d / nu
 new_lmb = f.calc_lambda(re, d, roughness)
 
-while abs(new_lmb - lmb) > 10e3:
+while abs(new_lmb - lmb) > 10e-6:
     lmb = new_lmb
     v = sqrt(2 * abs(p_start - p_end) * d / (lmb * L * rho))
     re = v * d / nu
@@ -71,6 +70,18 @@ while abs(new_lmb - lmb) > 10e3:
 x_km = [el / 1000 for el in x]  # сетка в км
 p_mpa = [p_start - (p_start - p_end) * el / 10e6 for el in x]  # Давление вдоль трубопровода
 
+# 2.5. Распространение всех полученных результатов в цикле для каждой точки сетки
+
+# 3. Нестационарная модель
+dt = int(c / dx)  # шаг по времени по условию Куранта
+time_segm = 100
+p_grid = np.zeros((n + 1, time_segm + 1))
+v_grid = np.zeros((n + 1, time_segm + 1))
+
+p_grid[:, 0] = [p_start - (p_start - p_end) * el for el in x]
+v_grid[:, 0] = [v] * (n + 1)
+
+# Графики стационарного режима
 fig, ax = plt.subplots(1, 2, figsize=(12, 5))
 fig.suptitle('Стационарный режим')
 
@@ -81,7 +92,7 @@ ax[0].set_ylabel('Давление (МПа)')
 ax[0].grid()
 ax[0].legend()
 
-ax[1].plot(x_km, [v]*len(x_km), label='Скорость', color='orange')
+ax[1].plot(x_km, [v] * (n + 1), label='Скорость', color='orange')
 ax[1].set_title('Изменение скорости от расстояния')
 ax[1].set_xlabel('Расстояние (км)')
 ax[1].set_ylabel('Скорость (м/с)')
@@ -91,4 +102,4 @@ ax[1].legend()
 plt.tight_layout()
 plt.show()
 
-# 2.5. Распространение всех полученных результатов в цикле для каждой точки сетки
+# Графики нестационарного режима
