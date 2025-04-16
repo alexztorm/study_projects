@@ -1,5 +1,8 @@
 import math
 from math import log
+from matplotlib.animation import FuncAnimation
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def get_ksi(rho: float) -> float:
@@ -35,7 +38,7 @@ def get_K(nu1: float, nu2: float, t1: float, t2: float) -> float:
     return 1 / (t2 - t1) * log(nu1 / nu2)
 
 
-def calc_lambda(re: float, d: float, roughness: float, use_colebrook_white=False, accuracy=10e6):
+def calc_lambda(re: float, d: float, roughness: float, use_colebrook_white=False, accuracy=1e6):
     if use_colebrook_white:
         lmbd = 0.04
         lmbd_new = 0.25 / (math.log10(roughness / (3.7 * d) + 5.74 / re ** 0.9)) ** 2
@@ -58,3 +61,53 @@ def calc_lambda(re: float, d: float, roughness: float, use_colebrook_white=False
             return 0.11 * (eps + 68 / re) ** 0.25
         else:
             return 0.11 * eps ** 0.25
+
+
+def animate_non_stationary(l: float, time_limit: int, p_start: float, p_end: float, dt: float, x, p, v, skip_frames=1):
+    # ================== ВИЗУАЛИЗАЦИЯ ==================
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+
+    ax1.set_xlim(0, l / 1000)
+    ax1.set_ylim(p_end / 1e6 - 0.5, p_start / 1e6 + 0.5)
+    ax2.set_xlabel('Расстояние, км')
+    ax1.set_ylabel('Давление, МПа')
+    ax1.grid(True)
+
+    ax2.set_xlim(0, l / 1000)
+    ax2.set_ylim(0.0, 1.0)
+    ax2.set_xlabel('Расстояние, км')
+    ax2.set_ylabel('Скорость, м/с')
+    ax2.grid(True)
+
+    line_p, = ax1.plot([], [], 'b-', lw=2)
+    line_v, = ax2.plot([], [], 'r-', lw=2)
+    time_text = ax1.text(0.02, 0.95, '', transform=ax1.transAxes)
+
+    x = [el / 1000 for el in x]
+
+    for row in p:
+        for el in row:
+            el = el / 1e6
+
+    def init():
+        line_p.set_data([], [])
+        line_v.set_data([], [])
+        time_text.set_text('')
+        return line_p, line_v, time_text
+
+    def update(frame):
+        n = frame * skip_frames
+        if n >= time_limit:
+            n = time_limit - 1
+
+        line_p.set_data(x, p[:, n])
+        line_v.set_data(x, v[:, n])
+        time_text.set_text(f'Время: {n * dt:.2f} с')
+
+        return line_p, line_v, time_text
+
+    ani = FuncAnimation(fig, update, frames=range(time_limit // skip_frames),
+                        init_func=init, blit=True, interval=50)
+
+    plt.tight_layout()
+    plt.show()
