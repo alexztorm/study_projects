@@ -69,12 +69,11 @@ def animate_non_stationary(l: float, time_limit: int, p_start: float, p_end: flo
 
     ax1.set_xlim(0, l / 1000)
     ax1.set_ylim(p_end / 1e6 - 0.5, p_start / 1e6 + 0.5)
-    ax2.set_xlabel('Расстояние, км')
     ax1.set_ylabel('Давление, МПа')
     ax1.grid(True)
 
     ax2.set_xlim(0, l / 1000)
-    ax2.set_ylim(0.0, 1.0)
+    ax2.set_ylim(0.0, 10.0)
     ax2.set_xlabel('Расстояние, км')
     ax2.set_ylabel('Скорость, м/с')
     ax2.grid(True)
