@@ -84,10 +84,6 @@ def animate_non_stationary(l: float, time_limit: int, p_start: float, p_end: flo
 
     x = [el / 1000 for el in x]
 
-    for row in p:
-        for el in row:
-            el = el / 1e6
-
     def init():
         line_p.set_data([], [])
         line_v.set_data([], [])
@@ -99,14 +95,14 @@ def animate_non_stationary(l: float, time_limit: int, p_start: float, p_end: flo
         if n >= time_limit:
             n = time_limit - 1
 
-        line_p.set_data(x, p[:, n])
+        line_p.set_data(x, p[:, n] / 1e6)
         line_v.set_data(x, v[:, n])
         time_text.set_text(f'Время: {n * dt:.2f} с')
 
         return line_p, line_v, time_text
 
     ani = FuncAnimation(fig, update, frames=range(time_limit // skip_frames),
-                        init_func=init, blit=True, interval=50)
+                        init_func=init, blit=True, interval=10)
 
     plt.tight_layout()
     plt.show()

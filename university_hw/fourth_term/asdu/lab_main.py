@@ -74,51 +74,54 @@ while abs(new_lmb - lmb) > 1e-6:
     new_lmb = f.calc_lambda(re, d, roughness)
 
 print(f'Количество итераций для расчета стационарной модели - {iter_steps}')
+dp = new_lmb * rho * v**2 / (2 * d) + rho*v**2*f.get_ksi(rho)/2
+p = [p_start - i * dp * dx for i in range(n + 1)]
+print(f'Давление в конце нефтепровода - {p[-1] / 1e6}')
 
 x_km = [el / 1000 for el in x]  # сетка в км
-p_mpa = [p_start - (p_start - p_end) * el / 1e6 for el in x]  # Давление вдоль трубопровода
+p_mpa = [el / 1e6 for el in p]  # Давление вдоль трубопровода
 
 
 
 # 3. Нестационарная модель
 dt = dx / c  # c, шаг по времени по условию Куранта
-time_segm = 100  # количество шагов по времени
+time_segm = 1000  # количество шагов по времени
 p_grid = np.zeros((n + 1, time_segm + 1))
 v_grid = np.zeros((n + 1, time_segm + 1))
 
-p_grid[:, 0] = [p_start - (p_start - p_end) * el for el in x]
+p_grid[:, 0] = p
 v_grid[:, 0] = [v] * (n + 1)
+changed = False
+p_start_init = p_start + 0
 
 for i in range(time_segm):
-    # Ia = v_grid[:, i] * rho * c + p_grid[:, i]
-    # Ib = p_grid[:, i] - v_grid[:, i] * rho * c
-    #
-    # print(Ib)
-    #
-    # Ia[1:] = Ia[:-1]
-    # Ib[:-1] = Ib[1:]
-    #
-    # Ia[0] = v_grid[0, i] * (rho * c) + p_grid[0, i]
-    # Ib[-1] = p_grid[-1, i] - v_grid[-1, i] * (rho * c)
-    #
-    # p_grid[:, i + 1] = (Ia + Ib) / 2
-    # v_grid[:, i + 1] = (Ia - Ib) / (2 * rho * c)
+    Ia = [0] * (n + 1)
+    Ib = [0] * (n + 1)
 
-    # Расчет инвариантов с правильными граничными условиями
-    Ia = v_grid[:, i] + p_grid[:, i] / (rho * c)
-    Ib = v_grid[:, i] - p_grid[:, i] / (rho * c)
+    for j in range(1, n + 1):
+        Ia[j] = (p_grid[j - 1, i] + v_grid[j - 1, i] * rho * c - new_lmb * rho * c * v_grid[j - 1, i]
+                 * abs(v_grid[j - 1, i]) / (2 * d) * dt)
 
-    # Распространение инвариантов
-    Ia[1:] = Ia[:-1]  # Ia движется вправо
-    Ib[:-1] = Ib[1:]  # Ib движется влево
+    for j in range(n):
+        Ib[j] = (p_grid[j + 1, i] - v_grid[j + 1, i] * rho * c + new_lmb * rho * c * v_grid[j + 1, i]
+                 * abs(v_grid[j + 1, i]) / (2 * d) * dt)
 
-    # Граничные условия (постоянное давление на краях)
-    Ia[0] = v_grid[0, i] + p_start / (rho * c)  # Левый край
-    Ib[-1] = v_grid[-1, i] - p_end / (rho * c)  # Правый край
+    for j in range(1, n):
+        p_grid[j, i + 1] = 0.5 * (Ia[j] + Ib[j])
+        v_grid[j, i + 1] = 0.5 * (Ia[j] - Ib[j]) / (rho * c)
 
-    # Обновление параметров
-    v_grid[:, i + 1] = 0.5 * (Ia + Ib)
-    p_grid[:, i + 1] = 0.5 * rho * c * (Ia - Ib)
+    # Левая граница
+    p_grid[0, i + 1] = p_start
+    v_grid[0, i + 1] = (p_start - Ib[0]) / (rho * c)
+
+    # Правая граница
+    p_grid[-1, i + 1] = p_end
+    v_grid[-1, i + 1] = (Ia[-1] - p_end) / (rho * c)
+
+    if i > 0.1 * time_segm and not changed:
+        p_start = 0.8 * p_start
+        changed = True
+
 
 # Графики стационарного режима
 fig, ax = plt.subplots(1, 2, figsize=(12, 5))
@@ -142,4 +145,4 @@ plt.tight_layout()
 plt.show()
 
 # Графики нестационарного режима
-f.animate_non_stationary(L, time_segm, p_start, p_end, dt, x, p_grid, v_grid)
+f.animate_non_stationary(L, time_segm, p_start_init, p_end, dt, x, p_grid, v_grid)
