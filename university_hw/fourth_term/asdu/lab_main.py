@@ -46,7 +46,6 @@ else:
 dx = (x_end - x_start) / n  # шаг по пространству
 
 
-
 # 2. Стационарная модель
 # 2.1. Создание расчетной сетки модели с шагом dx
 x = np.arange(x_start, x_end + dx / 10, dx).tolist()  # сетка расчетной модели
@@ -82,10 +81,9 @@ x_km = [el / 1000 for el in x]  # сетка в км
 p_mpa = [el / 1e6 for el in p]  # Давление вдоль трубопровода
 
 
-
 # 3. Нестационарная модель
 dt = dx / c  # c, шаг по времени по условию Куранта
-time_segm = 1000  # количество шагов по времени
+time_segm = 10000  # количество шагов по времени
 p_grid = np.zeros((n + 1, time_segm + 1))
 v_grid = np.zeros((n + 1, time_segm + 1))
 
@@ -93,6 +91,7 @@ p_grid[:, 0] = p
 v_grid[:, 0] = [v] * (n + 1)
 changed = False
 p_start_init = p_start + 0
+p_end_init = p_end
 
 for i in range(time_segm):
     Ia = [0] * (n + 1)
@@ -119,7 +118,8 @@ for i in range(time_segm):
     v_grid[-1, i + 1] = (Ia[-1] - p_end) / (rho * c)
 
     if i > 0.1 * time_segm and not changed:
-        p_start = 0.8 * p_start
+        p_start = p_start
+        p_end = p_start
         changed = True
 
 
@@ -145,4 +145,4 @@ plt.tight_layout()
 plt.show()
 
 # Графики нестационарного режима
-f.animate_non_stationary(L, time_segm, p_start_init, p_end, dt, x, p_grid, v_grid)
+f.animate_non_stationary(L, time_segm, p_start_init, p_end_init, dt, x, p_grid, v_grid)

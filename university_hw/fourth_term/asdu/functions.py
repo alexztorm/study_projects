@@ -68,7 +68,7 @@ def animate_non_stationary(l: float, time_limit: int, p_start: float, p_end: flo
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
 
     ax1.set_xlim(0, l / 1000)
-    ax1.set_ylim(p_end / 1e6 - 0.5, p_start / 1e6 + 0.5)
+    ax1.set_ylim(p_end / 1e6 - 0.5, 2 * p_start / 1e6 + 0.5)
     ax1.set_ylabel('Давление, МПа')
     ax1.grid(True)
 
@@ -102,7 +102,7 @@ def animate_non_stationary(l: float, time_limit: int, p_start: float, p_end: flo
         return line_p, line_v, time_text
 
     ani = FuncAnimation(fig, update, frames=range(time_limit // skip_frames),
-                        init_func=init, blit=True, interval=10)
+                        init_func=init, blit=True, interval=1)
 
     plt.tight_layout()
     plt.show()
